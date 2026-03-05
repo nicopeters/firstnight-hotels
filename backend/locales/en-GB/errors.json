@@ -1,0 +1,5 @@
+{
+  "error.validation.required": "This field is required.",
+  "error.validation.invalidDateRange": "Please choose a valid check-in and check-out date.",
+  "error.search.destinationUnsupported": "We do not support searches in this destination yet."
+}

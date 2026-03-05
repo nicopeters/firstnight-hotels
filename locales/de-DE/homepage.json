@@ -1,0 +1,26 @@
+{
+  "homepage.title": "Finde frisch renovierte Hotels und Apartments",
+  "homepage.subtitle": "Denn ein frisches 3-Sterne-Hotel schlägt oft ein altes 5-Sterne-Haus.",
+
+  "homepage.search.destinationLabel": "Reiseziel",
+  "homepage.search.dateLabel": "Daten",
+  "homepage.search.guestsLabel": "Gäste",
+
+  "homepage.freshness.toggle.label": "Nur Hotels, die in den letzten 5 Jahren eröffnet oder renoviert wurden",
+
+  "homepage.freshness.chip.ultraFresh": "Ultra frisch (0–1 Jahre)",
+  "homepage.freshness.chip.veryFresh": "Sehr frisch (1–3 Jahre)",
+  "homepage.freshness.chip.fresh": "Frisch (3–5 Jahre)",
+  "homepage.freshness.chip.avoidOldStock": "Alten Bestand vermeiden (10+ Jahre ausschließen)",
+
+  "homepage.freshness.preference.label": "Priorität",
+  "homepage.freshness.preference.price": "Bester Preis",
+  "homepage.freshness.preference.balanced": "Ausgewogen",
+  "homepage.freshness.preference.freshness": "Freshness zuerst",
+
+  "homepage.freshness.hideUnknown": "Hotels ohne Freshness-Angabe ausblenden",
+
+  "homepage.freshness.area.rooms": "Neue Zimmer",
+  "homepage.freshness.area.bathrooms": "Neue Badezimmer",
+  "homepage.freshness.area.commonAreas": "Neue Lobby / Gemeinschaftsbereiche"
+}

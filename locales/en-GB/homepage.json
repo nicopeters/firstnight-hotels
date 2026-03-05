@@ -1,0 +1,26 @@
+{
+  "homepage.title": "Find freshly renovated hotels and apartments",
+  "homepage.subtitle": "Because a fresh 3-star often beats an old 5-star.",
+
+  "homepage.search.destinationLabel": "Destination",
+  "homepage.search.dateLabel": "Dates",
+  "homepage.search.guestsLabel": "Guests",
+
+  "homepage.freshness.toggle.label": "Only hotels opened or renovated in the last 5 years",
+
+  "homepage.freshness.chip.ultraFresh": "Ultra fresh (0–1 years)",
+  "homepage.freshness.chip.veryFresh": "Very fresh (1–3 years)",
+  "homepage.freshness.chip.fresh": "Fresh (3–5 years)",
+  "homepage.freshness.chip.avoidOldStock": "Avoid old stock (exclude 10+ years)",
+
+  "homepage.freshness.preference.label": "Prioritize",
+  "homepage.freshness.preference.price": "Best price",
+  "homepage.freshness.preference.balanced": "Balanced",
+  "homepage.freshness.preference.freshness": "Freshness first",
+
+  "homepage.freshness.hideUnknown": "Hide hotels with unknown freshness",
+
+  "homepage.freshness.area.rooms": "New rooms",
+  "homepage.freshness.area.bathrooms": "New bathrooms",
+  "homepage.freshness.area.commonAreas": "New lobby / common areas"
+}

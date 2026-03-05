@@ -1,0 +1,15 @@
+{
+  "nav.home": "Home",
+  "nav.search": "Search",
+  "nav.about": "About",
+  "nav.language": "Language",
+
+  "action.search": "Search",
+  "action.close": "Close",
+  "action.cancel": "Cancel",
+  "action.apply": "Apply",
+
+  "label.guests": "Guests",
+  "label.checkIn": "Check-in",
+  "label.checkOut": "Check-out"
+}

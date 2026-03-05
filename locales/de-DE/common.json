@@ -1,0 +1,15 @@
+{
+  "nav.home": "Startseite",
+  "nav.search": "Suche",
+  "nav.about": "Über uns",
+  "nav.language": "Sprache",
+
+  "action.search": "Suchen",
+  "action.close": "Schließen",
+  "action.cancel": "Abbrechen",
+  "action.apply": "Anwenden",
+
+  "label.guests": "Gäste",
+  "label.checkIn": "Check-in",
+  "label.checkOut": "Check-in/Check-out"
+}
