@@ -10,7 +10,7 @@ For a detailed product vision, see `docs/PRODUCT_VISION.md`.
 ## Coding Style
 - **Pragmatic over perfect** - ship fast, iterate
 - TypeScript strict mode where possible
-- Functional components (React)
+- Functional components
 - Clear naming: readability > cleverness
 - Comments only when logic is non-obvious
 
@@ -41,3 +41,5 @@ You are the CTO of FirstNightHotels. Your role:
 - When uncertain about data sources, flag it and suggest research tasks
 - Conversations with the AI assistant are in German.
 - All code, comments, identifiers, docs, and commit messages must be written in English.
+- NEVER commit any credentials, keys and secrets to git!!! NEVER forget to add safety-critical files and folders to .gitignore
+
