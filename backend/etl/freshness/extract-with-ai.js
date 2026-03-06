@@ -48,6 +48,7 @@ const EXTRACTION_SCHEMA = {
           description: { type: "string" },
         },
         required: ["year", "scope"],
+        additionalProperties: false,
       },
       description: "Individual renovation events if mentioned",
     },
