@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>FirstNightHotels – Find fresh hotels</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,600;1,9..40,400&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0f1419;
+      --surface: #1a2332;
+      --text: #e6edf3;
+      --muted: #8b949e;
+      --accent: #58a6ff;
+      --accent-hover: #79b8ff;
+      --border: #30363d;
+      --radius: 8px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: "DM Sans", system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      line-height: 1.5;
+    }
+
+    .container {
+      max-width: 640px;
+      margin: 0 auto;
+      padding: 2rem 1rem;
+    }
+
+    h1 {
+      font-size: 1.5rem;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+    }
+
+    .tagline {
+      color: var(--muted);
+      font-size: 0.9rem;
+      margin-bottom: 2rem;
+    }
+
+    .search-form {
+      display: flex;
+      gap: 0.5rem;
+      margin-bottom: 2rem;
+    }
+
+    .search-form input {
+      flex: 1;
+      padding: 0.75rem 1rem;
+      font-size: 1rem;
+      font-family: inherit;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      color: var(--text);
+    }
+
+    .search-form input::placeholder {
+      color: var(--muted);
+    }
+
+    .search-form input:focus {
+      outline: none;
+      border-color: var(--accent);
+    }
+
+    .search-form button {
+      padding: 0.75rem 1.25rem;
+      font-size: 1rem;
+      font-family: inherit;
+      font-weight: 600;
+      background: var(--accent);
+      color: var(--bg);
+      border: none;
+      border-radius: var(--radius);
+      cursor: pointer;
+    }
+
+    .search-form button:hover {
+      background: var(--accent-hover);
+    }
+
+    .search-form button:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    .results-meta {
+      color: var(--muted);
+      font-size: 0.875rem;
+      margin-bottom: 1rem;
+    }
+
+    .results-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .results-list li {
+      padding: 1rem;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      margin-bottom: 0.5rem;
+    }
+
+    .results-list li:last-child {
+      margin-bottom: 0;
+    }
+
+    .property-name {
+      font-weight: 600;
+      font-size: 1rem;
+      margin-bottom: 0.25rem;
+    }
+
+    .property-meta {
+      color: var(--muted);
+      font-size: 0.875rem;
+    }
+
+    .property-address {
+      font-size: 0.8rem;
+      color: var(--muted);
+      margin-top: 0.25rem;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 3rem 1rem;
+      color: var(--muted);
+    }
+
+    .error {
+      padding: 1rem;
+      background: rgba(248, 81, 73, 0.15);
+      border: 1px solid #f85149;
+      border-radius: var(--radius);
+      color: #f85149;
+      margin-bottom: 1rem;
+    }
+
+    .loading {
+      text-align: center;
+      padding: 2rem;
+      color: var(--muted);
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>FirstNightHotels</h1>
+    <p class="tagline">Find hotels by location – freshness-first search</p>
+
+    <form class="search-form" id="searchForm">
+      <input
+        type="text"
+        id="searchInput"
+        placeholder="City or place (e.g. Berlin, Munich)"
+        autocomplete="off"
+      >
+      <button type="submit" id="searchBtn">Search</button>
+    </form>
+
+    <div id="resultsContainer">
+      <p class="empty-state" id="emptyState">Enter a city and press Search.</p>
+      <p class="loading" id="loading" style="display: none;">Searching…</p>
+      <div id="error" style="display: none;"></div>
+      <div id="results" style="display: none;">
+        <p class="results-meta" id="resultsMeta"></p>
+        <ul class="results-list" id="resultsList"></ul>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const form = document.getElementById("searchForm");
+    const input = document.getElementById("searchInput");
+    const btn = document.getElementById("searchBtn");
+    const emptyState = document.getElementById("emptyState");
+    const loading = document.getElementById("loading");
+    const errorEl = document.getElementById("error");
+    const resultsDiv = document.getElementById("results");
+    const resultsMeta = document.getElementById("resultsMeta");
+    const resultsList = document.getElementById("resultsList");
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const q = input.value.trim();
+      if (!q) return;
+
+      emptyState.style.display = "none";
+      resultsDiv.style.display = "none";
+      errorEl.style.display = "none";
+      loading.style.display = "block";
+      btn.disabled = true;
+
+      try {
+        const res = await fetch(`/search?city=${encodeURIComponent(q)}&limit=50`);
+        const data = await res.json();
+
+        loading.style.display = "none";
+        btn.disabled = false;
+
+        if (!res.ok) {
+          errorEl.textContent = data.error || "Search failed";
+          errorEl.style.display = "block";
+          return;
+        }
+
+        if (data.properties.length === 0) {
+          emptyState.textContent = `No hotels found for "${q}".`;
+          emptyState.style.display = "block";
+          return;
+        }
+
+        resultsMeta.textContent = `${data.total} hotel${data.total !== 1 ? "s" : ""} found`;
+        resultsList.innerHTML = data.properties
+          .map(
+            (p) => `
+            <li>
+              <div class="property-name">${escapeHtml(p.name)}</div>
+              <div class="property-meta">${escapeHtml(p.type)} · ${escapeHtml(p.city)}, ${escapeHtml(p.country_code)}</div>
+              ${p.address_line1 ? `<div class="property-address">${escapeHtml(p.address_line1)}</div>` : ""}
+            </li>
+          `
+          )
+          .join("");
+
+        resultsDiv.style.display = "block";
+      } catch (err) {
+        loading.style.display = "none";
+        btn.disabled = false;
+        errorEl.textContent = "Network error. Please try again.";
+        errorEl.style.display = "block";
+      }
+    });
+
+    function escapeHtml(str) {
+      if (str == null) return "";
+      const div = document.createElement("div");
+      div.textContent = str;
+      return div.innerHTML;
+    }
+  </script>
+</body>
+</html>
