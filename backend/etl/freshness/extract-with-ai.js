@@ -22,52 +22,6 @@ async function rateLimit() {
   lastCallTime = Date.now();
 }
 
-// Anthropic requires additionalProperties: false on every object type in the schema.
-const yearOrNull = {
-  oneOf: [
-    { type: "integer" },
-    { type: "null" },
-  ],
-};
-
-const renovationItemSchema = {
-  type: "object",
-  properties: {
-    year: { type: "integer" },
-    scope: { type: "string" },
-    description: { type: "string" },
-  },
-  required: ["year", "scope"],
-  additionalProperties: false,
-};
-
-const EXTRACTION_SCHEMA = {
-  type: "object",
-  properties: {
-    opening_year: yearOrNull,
-    last_major_renovation_year: yearOrNull,
-    last_soft_renovation_year: yearOrNull,
-    last_rebranding_year: yearOrNull,
-    renovations: {
-      type: "array",
-      items: renovationItemSchema,
-    },
-    confidence: {
-      type: "string",
-      enum: ["high", "medium", "low"],
-    },
-  },
-  required: [
-    "opening_year",
-    "last_major_renovation_year",
-    "last_soft_renovation_year",
-    "last_rebranding_year",
-    "renovations",
-    "confidence",
-  ],
-  additionalProperties: false,
-};
-
 /**
  * @param {string} propertyName
  * @param {string} text - Collected text from provider_raw
@@ -111,44 +65,35 @@ Respond with valid JSON only, no markdown. Schema:
   "confidence": "high"|"medium"|"low"
 }`;
 
+  const response = await client.messages.create({
+    model: MODEL,
+    max_tokens: 1024,
+    messages: [{ role: "user", content: prompt }],
+  });
+
+  const block = response.content?.find((b) => b.type === "text");
+  if (!block || block.type !== "text") {
+    throw new Error("No text in Claude response");
+  }
+
+  const raw = block.text.replace(/^```json?\s*|\s*```$/g, "").trim();
   let parsed;
   try {
-    const response = await client.messages.create({
-      model: MODEL,
-      max_tokens: 1024,
-      messages: [{ role: "user", content: prompt }],
-      output_config: {
-        format: {
-          type: "json_schema",
-          schema: EXTRACTION_SCHEMA,
-        },
-      },
-    });
-    const block = response.content?.find((b) => b.type === "text");
-    if (!block || block.type !== "text") {
-      throw new Error("No text in Claude response");
-    }
-    parsed = JSON.parse(block.text);
-  } catch (err) {
-    const isSchemaError =
-      (err.status === 400 || err.statusCode === 400) &&
-      String(err.message || err.error?.message || "").includes("additionalProperties");
-    if (isSchemaError) {
-      const response = await client.messages.create({
-        model: MODEL,
-        max_tokens: 1024,
-        messages: [{ role: "user", content: prompt }],
-      });
-      const block = response.content?.find((b) => b.type === "text");
-      if (!block || block.type !== "text") {
-        throw err;
-      }
-      const raw = block.text.replace(/^```json?\s*|\s*```$/g, "").trim();
-      parsed = JSON.parse(raw);
-    } else {
-      throw err;
-    }
+    parsed = JSON.parse(raw);
+  } catch (e) {
+    throw new Error(`Invalid JSON from Claude: ${e.message}`);
   }
+
+  const defaults = {
+    opening_year: null,
+    last_major_renovation_year: null,
+    last_soft_renovation_year: null,
+    last_rebranding_year: null,
+    renovations: [],
+    confidence: "low",
+  };
+  parsed = { ...defaults, ...parsed };
+  if (!Array.isArray(parsed.renovations)) parsed.renovations = [];
 
   // Validate years are reasonable (1900–2030)
   const currentYear = new Date().getFullYear();
@@ -172,4 +117,4 @@ Respond with valid JSON only, no markdown. Schema:
   return parsed;
 }
 
-module.exports = { extract, EXTRACTION_SCHEMA };
+module.exports = { extract };
